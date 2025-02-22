@@ -55,7 +55,7 @@ module.exports.getNews = async (req, res) => {
       page: Number(page),
       limit: Number(limit),
       totalPages: Math.ceil(totalCount / limit),
-      data: news,
+      news: news,
     });
   } catch (error) {
     console.error(error);
@@ -105,7 +105,7 @@ module.exports.getTrendingNews = async (req, res) => {
       page: Number(page),
       limit: Number(limit),
       totalPages: Math.ceil(totalCount / limit),
-      data: trendingNews,
+      news: trendingNews,
     });
   } catch (error) {
     console.error(error);
