@@ -44,3 +44,25 @@ module.exports.getTrendingCategories = async (req, res) => {
     res.status(500).json({ error: err.message });
   }
 };
+
+
+module.exports.subscribe =  async (req, res) => {
+  const { categId } = req.body;
+  const category = await Category.findOneAndUpdate(
+    { _id: categId },
+    { $ad },
+    { new: true, upsert: true }
+  );
+  res.json(category);
+}
+
+// Unsubscribe from a category
+module.exports.unSubscribe = async (req, res) => {
+  const { userId, categoryName } = req.body;
+  const category = await Category.findOneAndUpdate(
+    { name: categoryName },
+    { $pull: { subscribers: userId } },
+    { new: true }
+  );
+  res.json(category);
+}

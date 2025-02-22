@@ -5,6 +5,7 @@ const cors = require("cors");
 const { Server } = require("socket.io");
 const connectDB = require("./DBConfig");
 const Router = require("./Router");
+const { News } = require("./Model/news.model");
 
 const app = express();
 const server = http.createServer(app);
@@ -24,13 +25,16 @@ const io = new Server(server, {
 io.on("connection", (socket) => {
   console.log("User connected:", socket.id);
 
-  socket.on("sendNews", (news) => {
-    io.emit("receiveNews", news); // Broadcast news to all clients
-  });
-
   socket.on("disconnect", () => {
     console.log("User disconnected:", socket.id);
   });
+});
+
+// Emit real-time updates when news is created or updated
+News.watch().on('change', (change) => {
+  if (change.operationType === 'insert' || change.operationType === 'update') {
+    io.emit('newsUpdate', change.fullDocument);
+  }
 });
 
 const PORT = process.env.PORT || 5000;

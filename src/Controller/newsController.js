@@ -5,7 +5,6 @@ const { News } = require("../Model/news.model");
 module.exports.postNews = async (req, res) => {
   try {
     const { title, content, category, image } = req.body
-    const io = req.io;
 
     if(!title || !content || !category){
       return res.status(409).json({ message:"Title, Category & Content are required" })
@@ -13,8 +12,6 @@ module.exports.postNews = async (req, res) => {
 
     const news = new News({ title, content, category});
     await news.save();
-
-    // io.emit("receiveNews", news); // Send news to all clients in real-time
 
     return res.status(201).json(news);
   } catch (err) {
