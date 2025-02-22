@@ -5,5 +5,6 @@ const router = Router();
 router.get('/', controller.getNews)
 router.get('/trending', controller.getTrendingNews)
 router.post('/', controller.postNews)
+router.patch('/updateLike', controller.updateLike)
 
 module.exports = router;

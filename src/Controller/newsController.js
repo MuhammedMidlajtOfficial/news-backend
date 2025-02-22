@@ -81,7 +81,7 @@ module.exports.getTrendingNews = async (req, res) => {
 
     const trendingNews = await News.aggregate([
       { $match: matchStage }, // Apply filters
-      { $sort: { [sortField]: sortOrder, likes: -1 } }, // Sort dynamically
+      { $sort: { [sortField]: sortOrder, like: -1 } }, // Sort dynamically
       { $skip: (page - 1) * limit },
       { $limit: Number(limit) },
       {
@@ -109,3 +109,23 @@ module.exports.getTrendingNews = async (req, res) => {
     res.status(500).json({ error: error.message });
   }
 };
+
+module.exports.updateLike = async (req, res) => {
+  try {
+    const { newsId } = req.body
+
+    if(!newsId){
+      return res.status(409).json({ message:"News Id are required" })
+    }
+
+    const news = await News.updateOne(
+      { _id: newsId },
+      { $inc: { like: 1 } }
+    );
+
+    return res.status(201).json(news);
+  } catch (err) {
+    console.log(err);
+    res.status(500).json({ error: err.message });
+  }
+}
